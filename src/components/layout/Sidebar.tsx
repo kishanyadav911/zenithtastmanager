@@ -18,6 +18,8 @@ interface SidebarProps {
   onViewChange: (view: string) => void;
   onAddList?: () => void;
   taskCounts: Record<string, number>;
+  onStatsClick: () => void;
+  onSettingsClick: () => void;
 }
 
 export const Sidebar = ({
@@ -26,6 +28,8 @@ export const Sidebar = ({
   onViewChange,
   onAddList,
   taskCounts,
+  onStatsClick,
+  onSettingsClick,
 }: SidebarProps) => {
   const smartViews = [
     { id: "today", label: "Today", icon: Calendar, count: taskCounts.today || 0 },
@@ -117,11 +121,19 @@ export const Sidebar = ({
       </div>
 
       <div className="p-3 border-t border-border">
-        <Button variant="ghost" className="w-full justify-start gap-2">
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start gap-2"
+          onClick={onStatsClick}
+        >
           <BarChart3 className="h-4 w-4" />
           Statistics
         </Button>
-        <Button variant="ghost" className="w-full justify-start gap-2">
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start gap-2"
+          onClick={onSettingsClick}
+        >
           <Settings className="h-4 w-4" />
           Settings
         </Button>

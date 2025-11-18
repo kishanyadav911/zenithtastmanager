@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Task, Priority, Subtask, TaskList } from "@/types/task";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -22,15 +22,39 @@ interface AddTaskDialogProps {
 }
 
 export const AddTaskDialog = ({ open, onOpenChange, onSave, editTask, lists }: AddTaskDialogProps) => {
-  const [title, setTitle] = useState(editTask?.title || "");
-  const [description, setDescription] = useState(editTask?.description || "");
-  const [priority, setPriority] = useState<Priority>(editTask?.priority || "none");
-  const [dueDate, setDueDate] = useState<Date | undefined>(editTask?.dueDate);
-  const [listId, setListId] = useState(editTask?.listId || lists[0]?.id || "personal");
-  const [tags, setTags] = useState<string[]>(editTask?.tags || []);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [priority, setPriority] = useState<Priority>("none");
+  const [dueDate, setDueDate] = useState<Date | undefined>(undefined);
+  const [listId, setListId] = useState(lists[0]?.id || "personal");
+  const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
-  const [subtasks, setSubtasks] = useState<Subtask[]>(editTask?.subtasks || []);
+  const [subtasks, setSubtasks] = useState<Subtask[]>([]);
   const [subtaskInput, setSubtaskInput] = useState("");
+
+  // Update form fields when editTask changes
+  useEffect(() => {
+    if (editTask) {
+      setTitle(editTask.title);
+      setDescription(editTask.description || "");
+      setPriority(editTask.priority);
+      setDueDate(editTask.dueDate);
+      setListId(editTask.listId);
+      setTags(editTask.tags);
+      setSubtasks(editTask.subtasks);
+    } else {
+      // Reset form when creating new task
+      setTitle("");
+      setDescription("");
+      setPriority("none");
+      setDueDate(undefined);
+      setListId(lists[0]?.id || "personal");
+      setTags([]);
+      setSubtasks([]);
+    }
+    setTagInput("");
+    setSubtaskInput("");
+  }, [editTask, lists, open]);
 
   const handleSave = () => {
     if (!title.trim()) return;
