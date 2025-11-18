@@ -6,6 +6,8 @@ import { TaskCard } from "@/components/tasks/TaskCard";
 import { AddTaskDialog } from "@/components/tasks/AddTaskDialog";
 import { TaskFiltersComponent } from "@/components/tasks/TaskFilters";
 import { TaskStats } from "@/components/tasks/TaskStats";
+import { StatsDialog } from "@/components/stats/StatsDialog";
+import { SettingsDialog } from "@/components/settings/SettingsDialog";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { isToday, isThisWeek, isPast, startOfDay } from "date-fns";
@@ -18,6 +20,8 @@ const Index = () => {
   const [activeView, setActiveView] = useState("today");
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [statsDialogOpen, setStatsDialogOpen] = useState(false);
+  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>();
   const [filters, setFilters] = useState<TaskFilters>({
     search: "",
@@ -224,6 +228,8 @@ const Index = () => {
         activeView={activeView}
         onViewChange={setActiveView}
         taskCounts={taskCounts}
+        onStatsClick={() => setStatsDialogOpen(true)}
+        onSettingsClick={() => setSettingsDialogOpen(true)}
       />
 
       <div className="flex-1 overflow-y-auto">
@@ -302,6 +308,17 @@ const Index = () => {
         onSave={editingTask ? updateTask : addTask}
         editTask={editingTask}
         lists={lists}
+      />
+
+      <StatsDialog
+        open={statsDialogOpen}
+        onOpenChange={setStatsDialogOpen}
+        stats={stats}
+      />
+
+      <SettingsDialog
+        open={settingsDialogOpen}
+        onOpenChange={setSettingsDialogOpen}
       />
     </div>
   );
