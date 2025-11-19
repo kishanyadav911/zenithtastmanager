@@ -50,7 +50,6 @@ export const Sidebar = ({
   const sidebarContent = (
     <>
       <div className="p-6">
-      <div className="p-6">
         <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
           Daily Tasks
         </h1>
@@ -130,24 +129,61 @@ export const Sidebar = ({
         </div>
       </div>
 
-      <div className="p-3 border-t border-border">
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start gap-2"
+      <div className="p-3 border-t border-border mt-auto space-y-1">
+        <Button
+          variant="ghost"
+          className="w-full justify-start"
           onClick={onStatsClick}
         >
-          <BarChart3 className="h-4 w-4" />
+          <BarChart3 className="h-4 w-4 mr-2" />
           Statistics
         </Button>
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start gap-2"
+        <Button
+          variant="ghost"
+          className="w-full justify-start"
           onClick={onSettingsClick}
         >
-          <Settings className="h-4 w-4" />
+          <Settings className="h-4 w-4 mr-2" />
           Settings
         </Button>
+        <Button
+          variant="ghost"
+          className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+          onClick={handleSignOut}
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          Sign Out
+        </Button>
       </div>
-    </div>
+    </>
+  );
+
+  return (
+    <>
+      {/* Mobile Sidebar */}
+      <div className="lg:hidden">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="fixed top-4 left-4 z-50 bg-card shadow-lg"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="p-0 w-64">
+            <div className="flex flex-col h-full">
+              {sidebarContent}
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:flex w-64 border-r border-border bg-card h-screen flex-col">
+        {sidebarContent}
+      </div>
+    </>
   );
 };

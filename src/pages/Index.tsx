@@ -235,19 +235,46 @@ const Index = () => {
     return counts;
   }, [tasks, lists]);
 
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background overflow-hidden">
       <Sidebar
         lists={lists}
         activeView={activeView}
         onViewChange={setActiveView}
+        onAddList={() => {
+          const name = prompt("Enter list name:");
+          if (name?.trim()) {
+            const icon = prompt("Enter list icon emoji (e.g., 📝):");
+            const newList: TaskList = {
+              id: Date.now().toString(),
+              name: name.trim(),
+              icon: icon || "📝",
+              color: "#3b82f6",
+              order: lists.length,
+            };
+            setLists([...lists, newList]);
+            toast.success("List created!");
+          }
+        }}
         taskCounts={taskCounts}
         onStatsClick={() => setStatsDialogOpen(true)}
         onSettingsClick={() => setSettingsDialogOpen(true)}
       />
 
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto p-6 space-y-6">
+        <div className="max-w-7xl mx-auto p-4 lg:p-6 space-y-6 lg:mt-0 mt-14">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-3xl font-bold text-foreground">
