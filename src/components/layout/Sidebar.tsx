@@ -1,6 +1,8 @@
 import { TaskList } from "@/types/task";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Calendar,
   CalendarClock,
@@ -9,6 +11,8 @@ import {
   BarChart3,
   Settings,
   Plus,
+  Menu,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,6 +35,7 @@ export const Sidebar = ({
   onStatsClick,
   onSettingsClick,
 }: SidebarProps) => {
+  const { signOut } = useAuth();
   const smartViews = [
     { id: "today", label: "Today", icon: Calendar, count: taskCounts.today || 0 },
     { id: "upcoming", label: "Upcoming", icon: CalendarClock, count: taskCounts.upcoming || 0 },
@@ -38,8 +43,13 @@ export const Sidebar = ({
     { id: "completed", label: "Completed", icon: CheckCircle2, count: taskCounts.completed || 0 },
   ];
 
-  return (
-    <div className="w-64 border-r border-border bg-card h-screen flex flex-col">
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
+  const sidebarContent = (
+    <>
+      <div className="p-6">
       <div className="p-6">
         <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
           Daily Tasks

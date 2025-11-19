@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Task, TaskFilters, TaskList, TaskStats as ITaskStats } from "@/types/task";
 import { loadTasks, saveTasks, loadLists } from "@/lib/taskStorage";
+import { useAuth } from "@/contexts/AuthContext";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TaskCard } from "@/components/tasks/TaskCard";
 import { AddTaskDialog } from "@/components/tasks/AddTaskDialog";
@@ -9,12 +11,14 @@ import { TaskStats } from "@/components/tasks/TaskStats";
 import { StatsDialog } from "@/components/stats/StatsDialog";
 import { SettingsDialog } from "@/components/settings/SettingsDialog";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { isToday, isThisWeek, isPast, startOfDay } from "date-fns";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 const Index = () => {
+  const navigate = useNavigate();
+  const { user, loading } = useAuth();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [lists, setLists] = useState<TaskList[]>([]);
   const [activeView, setActiveView] = useState("today");
@@ -35,13 +39,23 @@ const Index = () => {
   });
 
   useEffect(() => {
-    setTasks(loadTasks());
-    setLists(loadLists());
-  }, []);
+    if (!loading && !user) {
+      navigate('/auth');
+    }
+  }, [user, loading, navigate]);
 
   useEffect(() => {
-    saveTasks(tasks);
-  }, [tasks]);
+    if (user) {
+      setTasks(loadTasks());
+      setLists(loadLists());
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      saveTasks(tasks);
+    }
+  }, [tasks, user]);
 
   const addTask = (taskData: Omit<Task, "id" | "createdAt" | "order">) => {
     const newTask: Task = {
